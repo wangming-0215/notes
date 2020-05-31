@@ -75,7 +75,7 @@
 
 ### 框架结构
 
-![Flutter 架构图](assets/架构图.png)
+![Flutter 架构图](./assets/架构图.png)
 
 自底向上：
 
