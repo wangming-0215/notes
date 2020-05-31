@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>轨道运动</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const planets = [];
+
+      const sun = new Ball(100, '#ffff00');
+      sun.x = width / 2;
+      sun.y = height / 2;
+      sun.mass = 10000;
+      planets.push(sun);
+
+      const planet = new Ball(10, '#00ff00');
+      planet.x = width / 2 + 200;
+      planet.y = height / 2;
+      planet.vy = 6;
+      planet.mass = 1;
+      planets.push(planet);
+
+      function draw(planet) {
+        planet.draw(ctx);
+      }
+
+      function move(planetA, i) {
+        planetA.x += planetA.vx;
+        planetA.y += planetA.vy;
+        for (let j = i + 1; j < planets.length; j++) {
+          const planetB = planets[j];
+          gravitate(planetA, planetB);
+        }
+      }
+
+      function gravitate(pA, pB) {
+        const dx = pB.x - pA.x;
+        const dy = pB.y - pA.y;
+        const distSQ = dx ** 2 + dy ** 2;
+        const dist = Math.sqrt(distSQ);
+        const force = (pA.mass * pB.mass) / distSQ;
+        const ax = (force * dx) / dist;
+        const ay = (force * dy) / dist;
+        pA.vx += ax / pA.mass;
+        pA.vy += ay / pA.mass;
+        pB.vx -= ax / pB.mass;
+        pB.vy -= ay / pB.mass;
+      }
+
+      function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        ctx.clearRect(0, 0, width, height);
+
+        planets.forEach(move);
+        planets.forEach(draw);
+      }
+
+      drawFrame();
+    };
+  </script>
+</html>

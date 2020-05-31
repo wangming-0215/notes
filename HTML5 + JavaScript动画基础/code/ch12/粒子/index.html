@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>粒子</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const particles = [];
+      const numParticles = 30;
+      for (let i = 0; i < numParticles; i++) {
+        const size = Math.random() * 20 + 5;
+        const particle = new Ball(size);
+        particle.x = Math.random() * width;
+        particle.y = Math.random() * height;
+        particle.mass = size;
+        particles.push(particle);
+      }
+
+      function rotate(x, y, sin, cos, reverse) {
+        return {
+          x: reverse ? x * cos + y * sin : x * cos - y * sin,
+          y: reverse ? y * cos - x * sin : y * cos + x * sin
+        };
+      }
+
+      // 两球碰撞检测
+      function checkCollision(ball0, ball1) {
+        const dx = ball1.x - ball0.x;
+        const dy = ball1.y - ball0.y;
+        const dist = Math.sqrt(dx ** 2 + dy ** 2);
+
+        if (dist < ball0.radius + ball1.radius) {
+          // 两球之间的角度
+          const angle = Math.atan2(dy, dx);
+          const sin = Math.sin(angle);
+          const cos = Math.cos(angle);
+          // 对小球的速度和位置进行坐标旋转。
+          // 旋转后的位置时x0，y0，x1和y1
+          // ball0 作为中心点，所以它的坐标为(0, 0)，坐标旋转后也不变
+          const pos0 = { x: 0, y: 0 }; // 旋转后 ball0 位置
+          const pos1 = rotate(dx, dy, sin, cos, true); // 旋转后 ball1 位置
+          const v0 = rotate(ball0.vx, ball0.vy, sin, cos, true); // 旋转后 ball0 的速度向量
+          const v1 = rotate(ball1.vx, ball1.vy, sin, cos, true); // 旋转后 ball1 的速度向量
+          const vxTotal = v0.x - v1.x;
+          v0.x =
+            ((ball0.mass - ball1.mass) * v0.x + 2 * ball1.mass * v1.x) /
+            (ball0.mass + ball1.mass);
+          v1.x = vxTotal + v0.x;
+          const absV = Math.abs(v0.x) + Math.abs(v1.x);
+          const overlap =
+            ball0.radius + ball1.radius - Math.abs(pos0.x - pos1.x);
+          pos0.x += (v0.x / absV) * overlap;
+          pos1.x += (v1.x / absV) * overlap;
+          // 坐标还原
+          const pos0F = rotate(pos0.x, pos0.y, sin, cos, false);
+          const pos1F = rotate(pos1.x, pos1.y, sin, cos, false);
+          ball1.x = ball0.x + pos1F.x;
+          ball1.y = ball0.y + pos1F.y;
+          ball0.x = ball0.x + pos0F.x;
+          ball0.y = ball0.y + pos0F.y;
+
+          // 速度还原
+          const v0F = rotate(v0.x, v0.y, sin, cos, false);
+          const v1F = rotate(v1.x, v1.y, sin, cos, false);
+          ball0.vx = v0F.x;
+          ball0.vy = v0F.y;
+          ball1.vx = v1F.x;
+          ball1.vy = v1F.y;
+        }
+      }
+
+      function draw(particle) {
+        particle.draw(ctx);
+      }
+
+      function move(particleA, i) {
+        particleA.x += particleA.vx;
+        particleA.y += particleA.vy;
+
+        for (let j = i + 1; j < numParticles; j++) {
+          particleB = particles[j];
+          checkCollision(particleA, particleB);
+          gravitate(particleA, particleB);
+        }
+      }
+
+      function gravitate(partA, partB) {
+        const dx = partB.x - partA.x;
+        const dy = partB.y - partA.y;
+        const distSQ = dx ** 2 + dy ** 2;
+        const dist = Math.sqrt(distSQ);
+        const force = (partA.mass * partB.mass) / distSQ;
+        const ax = (force * dx) / dist;
+        const ay = (force * dy) / dist;
+        partA.vx += ax / partA.mass;
+        partA.vy += ay / partA.mass;
+        partB.vx -= ax / partB.mass;
+        partB.vy -= ay / partB.mass;
+      }
+
+      function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        ctx.clearRect(0, 0, width, height);
+
+        particles.forEach(move);
+        particles.forEach(draw);
+      }
+
+      drawFrame();
+    };
+  </script>
+</html>

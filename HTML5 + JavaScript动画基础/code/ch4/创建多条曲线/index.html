@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>创建多条曲线</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+  </body>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const points = [];
+      const numPoints = 9;
+      const ctrlPoint = {};
+      for (let i = 0; i < numPoints; i++) {
+        points.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height
+        });
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+
+      let i = 1;
+      for (; i < numPoints - 2; i++) {
+        ctrlPoint.x = (points[i].x + points[i + 1].x) / 2;
+        ctrlPoint.y = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(
+          points[i].x,
+          points[i].y,
+          ctrlPoint.x,
+          ctrlPoint.y
+        );
+      }
+      ctx.quadraticCurveTo(
+        points[i].x,
+        points[i].y,
+        points[i + 1].x,
+        points[i + 1].y
+      );
+      ctx.stroke();
+    };
+  </script>
+</html>

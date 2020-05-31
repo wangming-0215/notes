@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>链式弹动</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.querySelector('#canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const spring = 0.03;
+      const friction = 0.9;
+      const gravity = 3;
+      const balls = [];
+      let numBalls = 5;
+
+      while (numBalls--) {
+        balls.push(new Ball(20));
+      }
+
+      const mouse = { x: 0, y: 0 };
+
+      function move(ball, target) {
+        ball.vx = (ball.vx + (target.x - ball.x) * spring) * friction;
+        ball.vy =
+          (ball.vy + ((target.y - ball.y) * spring + gravity)) * friction;
+
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+      }
+
+      function draw(ball, i) {
+        ctx.beginPath();
+        if (i === 0) {
+          move(ball, mouse);
+          ctx.moveTo(mouse.x, mouse.y);
+        } else {
+          const ballA = balls[i - 1];
+          move(ball, { x: ballA.x, y: ballA.y });
+          ctx.moveTo(ballA.x, ballA.y);
+        }
+        ctx.lineTo(ball.x, ball.y);
+        ctx.stroke();
+        ball.draw(ctx);
+      }
+
+      function animate() {
+        window.requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, width, height);
+        balls.forEach(draw);
+      }
+      window.requestAnimationFrame(animate);
+      window.addEventListener('mousemove', function(event) {
+        mouse.x = event.pageX;
+        mouse.y = event.pageY;
+      });
+    };
+  </script>
+</html>

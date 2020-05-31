@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>旋转单个物体</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const ball = new Ball();
+      const vr = 0.05;
+      const center = {
+        x: width / 2,
+        y: height / 2
+      };
+
+      ball.x = Math.random() * width;
+      ball.y = Math.random() * height;
+
+      function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        ctx.clearRect(0, 0, width, height);
+
+        const x1 = ball.x - center.x;
+        const y1 = ball.y - center.y;
+
+        const x2 = x1 * Math.cos(vr) - y1 * Math.sin(vr);
+        const y2 = y1 * Math.cos(vr) + x1 * Math.sin(vr);
+
+        ball.x = center.x + x2;
+        ball.y = center.y + y2;
+        ball.draw(ctx);
+      }
+
+      drawFrame();
+    };
+  </script>
+</html>

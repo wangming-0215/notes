@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>多物体弹动</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const balls = [];
+      const numBalls = 10;
+      const bounce = -0.5;
+      const spring = 0.03;
+      const gravity = 0.1;
+
+      for (let i = 0; i < numBalls; i++) {
+        const ball = new Ball(
+          Math.random() * 30 + 20,
+          `#${((Math.random() * 0xffffff) | 0).toString(16)}`
+        );
+        ball.x = Math.random() * width;
+        ball.y = Math.random() * height;
+        ball.vx = Math.random() * 6 - 3;
+        ball.vy = Math.random() * 6 - 3;
+        balls.push(ball);
+      }
+
+      function move(ball) {
+        ball.vy += gravity;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        if (ball.x + ball.radius > width) {
+          ball.x = width - ball.radius;
+          ball.vx *= bounce;
+        } else if (ball.x - ball.radius < 0) {
+          ball.x = ball.radius;
+          ball.vx *= bounce;
+        }
+
+        if (ball.y + ball.radius > height) {
+          ball.y = height - ball.radius;
+          ball.vy *= bounce;
+        } else if (ball.x - ball.radius < 0) {
+          ball.y = ball.radius;
+          ball.vy *= bounce;
+        }
+      }
+
+      function checkCollision(ballA, i) {
+        for (let j = i + 1; j < numBalls; j++) {
+          const ballB = balls[j];
+          const dx = ballB.x - ballA.x;
+          const dy = ballB.y - ballA.y;
+          const dist = Math.sqrt(dx ** 2 + dy ** 2);
+          const minDist = ballA.radius + ballB.radius;
+          if (dist < minDist) {
+            const angle = Math.atan2(dy, dx);
+            const tx = ballA.x + Math.cos(angle) * minDist;
+            const ty = ballA.y + Math.sign(angle) * minDist;
+            const ax = (tx - ballB.x) * spring * 0.5;
+            const ay = (ty - ballB.y) * spring * 0.5;
+            ballA.vx -= ax;
+            ballA.vy -= ay;
+            ballB.vx += ax;
+            ballB.vy += ay;
+          }
+        }
+      }
+
+      function draw(ball) {
+        ball.draw(ctx);
+      }
+
+      function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        ctx.clearRect(0, 0, width, height);
+
+        balls.forEach(checkCollision);
+        balls.forEach(move);
+        balls.forEach(draw);
+      }
+
+      drawFrame();
+    };
+  </script>
+</html>

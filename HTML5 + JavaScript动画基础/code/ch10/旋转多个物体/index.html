@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>旋转多个物体</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const mouse = { x: 0, y: 0 };
+      const balls = [];
+      const numBalls = 10;
+      const vr = 0.05;
+      const center = { x: width / 2, y: height / 2 };
+
+      for (let i = 0; i < numBalls; i++) {
+        const ball = new Ball();
+        ball.x = width / 2 + (ball.radius + 20) * (i + 1);
+        ball.y = height / 2;
+        ball.vr = Math.random() * 0.0001;
+        balls.push(ball);
+      }
+
+      function move(ball) {
+        const angle = (mouse.x - center.x) * ball.vr;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        const x1 = ball.x - center.x;
+        const y1 = ball.y - center.y;
+        const x2 = x1 * cos - y1 * sin;
+        const y2 = y1 * cos + x1 * sin;
+        ball.x = center.x + x2;
+        ball.y = center.y + y2;
+      }
+
+      function draw(ball) {
+        ball.draw(ctx);
+      }
+
+      function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        ctx.clearRect(0, 0, width, height);
+
+        balls.forEach(move);
+        balls.forEach(draw);
+      }
+
+      drawFrame();
+
+      window.addEventListener('mousemove', function(event) {
+        mouse.x = event.pageX;
+        mouse.y = event.pageY;
+      });
+    };
+  </script>
+</html>

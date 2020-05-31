@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>喷泉</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.querySelector("#canvas");
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext("2d");
+
+      const balls = [];
+      const numBalls = 1000;
+      const gravity = 0.5;
+
+      function randomColor() {
+        return `#${((Math.random() * 0xffffff) | 0).toString(16)}`;
+      }
+
+      for (let i = 0; i < numBalls; i++) {
+        const color = randomColor();
+        const ball = new Ball(2, color);
+        ball.x = width / 2;
+        ball.y = height;
+        ball.vx = 0;
+        ball.vy = 0;
+        balls.push(ball);
+      }
+
+      function draw(ball) {
+        ball.vy += gravity;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        if (
+          ball.x - ball.radius > width ||
+          ball.x + ball.radius < 0 ||
+          ball.y - ball.radius > height ||
+          ball.y + ball.raidus < 0
+        ) {
+          ball.x = width / 2;
+          ball.y = height;
+          ball.vx = Math.random() * 2 - 1;
+          ball.vy = Math.random() * -10 - 15;
+        }
+        ball.draw(ctx);
+      }
+
+      function animate() {
+        window.requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, width, height);
+
+        balls.forEach(draw);
+      }
+
+      window.requestAnimationFrame(animate);
+    };
+  </script>
+</html>

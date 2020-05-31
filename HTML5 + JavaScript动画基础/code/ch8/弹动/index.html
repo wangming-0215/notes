@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>弹动</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.querySelector('#canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const spring = 0.03;
+      const friction = 0.95;
+      const gravity = 2;
+      const mouse = { x: 0, y: 0 };
+
+      let vx = 0;
+      let vy = 0;
+
+      const ball = new Ball();
+      ball.y = height / 2;
+
+      function animate() {
+        window.requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, width, height);
+
+        const ax = (mouse.x - ball.x) * spring;
+        const ay = (mouse.y - ball.y) * spring;
+
+        vx = (vx + ax) * friction;
+        vy = (vy + ay + gravity * 5) * friction;
+
+        ball.x += vx;
+        ball.y += vy;
+
+        ctx.beginPath();
+        ctx.moveTo(ball.x, ball.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.closePath();
+        ctx.stroke();
+
+        ball.draw(ctx);
+      }
+
+      window.requestAnimationFrame(animate);
+
+      window.addEventListener('mousemove', function(event) {
+        mouse.x = event.pageX;
+        mouse.y = event.pageY;
+      });
+    };
+  </script>
+</html>

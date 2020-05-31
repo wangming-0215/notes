@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>绘制像素数据</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script>
+    const canvas = document.querySelector('#canvas');
+    const width = (canvas.width = window.innerWidth);
+    const height = (canvas.height = window.innerHeight);
+
+    const ctx = canvas.getContext('2d');
+
+    const mouse = { x: 0, y: 0 };
+
+    function drawFrame() {
+      window.requestAnimationFrame(drawFrame);
+
+      for (let i = 0; i < width; i += 10) {
+        for (let j = 0; j < height; j += 10) {
+          ctx.fillStyle =
+            i % 20 === 0 ? '#f00' : i % 10 === 0 ? '#0f0' : '#00f';
+          ctx.fillRect(i, j, 10, 10);
+        }
+      }
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = imageData.data;
+
+      for (let y = 0; y < imageData.height; y += 1) {
+        for (let x = 0; x < imageData.width; x += 1) {
+          const dx = x - mouse.x;
+          const dy = y - mouse.y;
+          const dist = Math.sqrt(dx ** 2, dy ** 2);
+          const offset = (x + y * imageData.width) * 4;
+          const red = pixels[offset];
+          const green = pixels[offset + 1];
+          const blue = pixels[offset + 2];
+
+          pixels[offset] = Math.cos(red * dist * 0.001) * 256;
+          pixels[offset + 1] = Math.sin(green * dist * 0.001) * 256;
+          pixels[offset + 2] = Math.cos(blue * dist * 0.0005) * 256;
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    window.requestAnimationFrame(drawFrame);
+
+    window.addEventListener('mousemove', function(event) {
+      mouse.x = event.pageX;
+      moust.y = event.pageY;
+    });
+  </script>
+</html>

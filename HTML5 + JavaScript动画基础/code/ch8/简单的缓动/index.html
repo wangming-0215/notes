@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>简单的缓动</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="../ball.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.querySelector('#canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      const mouse = { x: 0, y: 0 };
+
+      const ball = new Ball();
+      ball.y = height / 2;
+
+      const easing = 0.05;
+
+      let raf = null;
+
+      function animate() {
+        raf = window.requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, width, height);
+
+        const dx = mouse.x - ball.x;
+        const dy = mouse.y - ball.y;
+
+        ball.x += dx * easing;
+        ball.y += dy * easing;
+
+        ball.draw(ctx);
+      }
+
+      raf = window.requestAnimationFrame(animate);
+
+      window.addEventListener('mousemove', function(event) {
+        mouse.x = event.pageX;
+        mouse.y = event.pageY;
+      });
+    };
+  </script>
+</html>

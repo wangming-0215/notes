@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>宇宙飞船</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+
+      #canvas {
+        display: block;
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="./ship.js"></script>
+  <script>
+    window.onload = function() {
+      const canvas = document.querySelector('#canvas');
+      const width = (canvas.width = window.innerWidth);
+      const height = (canvas.height = window.innerHeight);
+      const ctx = canvas.getContext('2d');
+
+      let vr = 0;
+      let vx = 0;
+      let vy = 0;
+      let thrust = 0; // 推力
+
+      const ship = new Ship();
+      ship.x = width / 2;
+      ship.y = height / 2;
+
+      function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        ctx.clearRect(0, 0, width, height);
+
+        ship.rotation += (vr * Math.PI) / 180;
+        const ax = Math.cos(ship.rotation) * thrust;
+        const ay = Math.sin(ship.rotation) * thrust;
+
+        vx += ax;
+        vy += ay;
+        ship.x += vx;
+        ship.y += vy;
+
+        ship.draw(ctx);
+      }
+
+      window.requestAnimationFrame(drawFrame);
+
+      // 控制飞船
+      window.addEventListener('keyup', function(event) {
+        vr = 0;
+        thrust = 0;
+        ship.showFlame = false;
+      });
+
+      window.addEventListener('keydown', function(event) {
+        switch (event.keyCode) {
+          case 37: {
+            vr = -3;
+            break;
+          }
+          case 39: {
+            vr = 3;
+            break;
+          }
+          case 38: {
+            thrust = 0.05;
+            ship.showFlame = true;
+            break;
+          }
+        }
+      });
+    };
+  </script>
+</html>

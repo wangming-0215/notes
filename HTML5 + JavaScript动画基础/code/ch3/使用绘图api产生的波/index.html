@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>使用绘图API产生的波</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+
+      #canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const width = (canvas.width = window.innerWidth);
+    const height = (canvas.height = window.innerHeight);
+
+    let angle = 0;
+    let xpos = 0;
+    let ypos = height / 2;
+    const range = 50;
+    const xspeed = 1;
+    const yspeed = 0.05;
+
+    ctx.lineWidth = 2;
+
+    function drawFrame() {
+      window.requestAnimationFrame(drawFrame);
+
+      ctx.beginPath();
+      ctx.moveTo(xpos, ypos);
+      // 计算下一帧位置
+      xpos += xspeed;
+      angle += yspeed;
+      ypos = height / 2 + Math.sin(angle) * range;
+      ctx.lineTo(xpos, ypos);
+      ctx.closePath();
+      ctx.stroke();
+    }
+    window.requestAnimationFrame(drawFrame);
+  </script>
+</html>
