@@ -226,7 +226,7 @@ fun main() {
 
 Kotlin 中使用`class`关键字创建类。
 
-**面向对象编程的最基本用法：先将事物封装成具体的类，然后将事物所拥有的属性和能力分别定义成类中的字段和函数，再对类进行实例化，最后根据具体的编程需求调用类中的字段和方法即可。**
+面向对象编程的最基本用法：先将事物封装成具体的类，然后将事物所拥有的属性和能力分别定义成类中的字段和函数，再对类进行实例化，最后根据具体的编程需求调用类中的字段和方法即可。
 
 ```kotlin
 class Person {
@@ -666,5 +666,74 @@ val c = a ?: b
 
 ```kotlin
 val upperCase = content!!.toUpperCase() // 这是一个危险的操作
+```
+
+`let`
+
+`let`既不是操作符，也不是什么关键字，而是一个函数。这个函数提供了函数式 API 的编程接口，并将原始调用对象作为参数传递到 Lambda 表达式中。
+
+```kotlin
+// obj 调用了 let 函数，然后 lambda 表达式中的代码就会立即执行，并将 obj 对象本身作为参数传递到 lambda 表达式中。
+// 为了避免重名，这里将参数名改为 obj2
+obj.let { obj2 -> 
+	// 编写具体业务逻辑
+}
+```
+
+使用`let`优化空指针检查
+
+```kotlin
+fun doStudy(study: Study?) {
+  study?.let { stu ->
+    stu.readBooks()
+    stu.doHomework()
+  }
+}
+
+// 进一步简化
+fun doStudy(study: Study?) {
+  study?.let {
+    it.readBooks()
+    it.doHomework()
+  }
+}
+```
+
+## Kotlin 中的小魔术
+
+### 字符串内嵌表达式
+
+```kotlin
+fun main() {
+  println("Hello, ${obj.name}. Nice to meet you!")
+  // 表达式中仅有一个变量时，可以省略大括号
+  println("Hello, $name. Nice to meet you!")
+}
+```
+
+### 函数的参数默认值
+
+在定义函数时，可以给任意参数设定一个默认值，这样当调用此函数时就不会强制要求调用方为此参数传值，在没有传值的情况下回自动使用参数的默认值。
+
+```kotlin
+fun printParams(num: Int, str: String = "hello") {
+  println("num is $num, str is $str")
+}
+
+fun main() {
+  printParams(123) // num is 123, str is hello
+}
+```
+
+Kotlin 可以通过键值对的方式来传参，从而不必像传统写法按照参数定义的顺序来传参。
+
+```kotlin
+fun printParams(num: Int = 100, str: String) {
+  println("num is $num, str is $str")
+}
+
+fun main() {
+  printParams(str = "world") // num is 100, str is world
+}
 ```
 
