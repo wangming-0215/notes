@@ -434,3 +434,237 @@ fun doStudy(study: Study) {
 在一个规范的系统架构中，数据类通常占据着非常重要的角色，它们用于将服务器端或数据库中的数据映射到内存中，为编程逻辑提供数据模型的支持。`MVC`，`MVP`，`MVVM`之类的架构模式，不管时哪一种架构模式，其中*M*指的就是数据类。
 
 数据类通常需要重写`equals()`、`hashCode()`、`toString()`这几个方法。其中，`equals()`方法用于判断两个数据类是否相等。 `hashCode()`方法作为`equals()`的配套方法，也需要一起重写，否则会导致`HashMap`、`HashSet`等 hash 相关的系统类无法正常工作。`toString()`方法用于提供更清晰的输入日志，否则一个数据类默认打印出来的一行内存地址。
+
+#### 数据类
+
+用`data`关键字声明类时，表示这个类是一个数据类，Kotlin 会根据主构造函数中的参数将`equals()`，`hashCode()`，`toString()`等固定且无实际逻辑意义的方法自动生成，从而大大减少开发的工作量。
+
+```kotlin
+data class Cellphone(val brand: String, val price: Double)
+
+fun main() {
+    val cellphone1 = Cellphone("Samsung", 1299.99)
+    val cellphone2 = Cellphone("Samsung", 1200.99)
+}
+```
+
+#### 单例类
+
+在 Kotlin 中创建一个*单例类*的方式及其简单，只需要将`class`关键字改成`object`关键字即可。
+
+```kotlin
+object Singleton {
+    fun singletonTest() {
+        println("singletonTest is called.")
+    }
+}
+
+fun main() {
+    Singleton.singletonTest()
+}
+```
+
+## Lambda 编程
+
+### 定义
+
+Lambda 就是一小段可以作为参数传递的代码。
+
+通常不建议在 Lambda 表达式中编写太长的代码，否则可能会影响代码的可读性。
+
+```
+{ 参数1 : 参数类型， 参数2 : 参数类型 -> 函数体 }
+```
+
+函数体中的最后一行代码会自动作为 Lambda 表达式的返回值。
+
+### 集合的创建和遍历
+
+#### List
+
+```kotlin
+// 第一种方式
+val list = ArrayList<String>()
+list.add("Apple")
+list.add("Orange")
+list.add("Banana")
+list.add("Peach")
+
+// 第二种方式
+// listOf 创建的是一个不可变的集合，只能用于读取，无法修改，添加或删除
+val list = listOf("Apple", "Orange", "Banana", "Peach")
+
+// 可变集合
+val list = mutableListOf("Apple", "Orange", "Banana", "Peach11")
+list.add("Watermelen")
+
+// for-in 遍历
+for (fruit in list) {
+    println(fruit)
+}
+```
+
+#### Set 
+
+`Set`集合中不可以存放重复元素，如果存放多个相同元素，只会保留一份。
+
+```kotlin
+// 不可变集合
+val set = setOf("Apple", "Orange", "Banana", "Peach")
+
+// 可变集合
+val set = mutableSetOf("Apple", "Orange", "Banana", "Peach")
+
+for (fruit in set) {
+    print(fruit)
+}
+```
+
+#### Map
+
+`Map`是一种键值对形式的数据结构。
+
+``` kotlin
+// 第一种
+val map = HashMap<String, Int>()
+map.put("Apple", 1)
+map.put("Orange", 2)
+map.put("Banana", 3)
+map.put("Peach", 4)
+
+// Kotlin 中不推荐使用`put()`和`get()`方法对`Map`进行添加和读取操作
+// 推荐一种类似数组下标的语法结构
+map["Apple"] = 1
+map["Orange"] = 2
+map["Banana"] = 3
+map["Peach"] = 4
+
+// 第二种
+val map = mapOf("Apple" to 1, "Orange" to 2, "Banana" to 3, "Peach" to 4)
+val map = mutableMapOf("Apple" to 1, "Orange" to 2, "Banana" to 3, "Peach" to 4)
+
+// 遍历
+for((fruit, number) in map) {
+    print("fruit is " + fruit + ", number is " + number)
+}
+```
+
+### 集合的函数式API
+
+#### maxBy
+
+根据传入的条件找出最大值。
+
+```kotlin
+// 集合中最长的字符串
+val list = listOf("Apple", "Banana", "Orange", "Peach", "Watermelon")
+val lambda = { fruit: string -> fruit.length }
+val maxLengthFruit = list.maxBy(lambda)
+
+// 第一次简化
+val maxLengthFruit = list.maxBy({ fruit: String -> fruit.length })
+
+// 当 lambda 参数是函数的最后一个参数时，可以将 lambda 表达式移到函数括号外面
+val maxLengthFruit = list.maxBy() { fruit: String -> fruit.length }
+
+// 如果 lambda 参数是函数的唯一一个参数时，函数的括号可以省略
+val maxLengthFruit = list.maxBy { fruit: String -> fruit.length }
+
+// 由于 Kotlin 的类型推导机制， lambda 表达式中的参数大多数情况下不必声明参数类型
+val maxLengthFruit = list.maxBy { fruit -> fruit.length }
+
+// 当 lambda 表达式的参数列表中只有一个参数时，也不必声明参数名，而是可以使用`it`关键字代替
+val maxLengthFruit = list.maxBy { it.length }
+
+```
+
+#### map
+
+将集合中的每个值映射为另一个值。
+
+```kotlin
+// map 将集合中的每个值映射为另一个值
+val list = listOf("Apple", "Banana", "Orange")
+val newList = list.map { it.toUpperCase() }
+```
+
+#### filter
+
+过滤集合中的数据。
+
+```kotlin
+val list = listOf("Apple", "Banana", "Orange", "Watermelon")
+val newList = list.filter { it.length <= 5 }
+```
+
+#### any
+
+判断集合中是否至少存在一个元素满足条件， 返回 `Boolean`。
+
+```kotlin
+val list = listOf("Apple", "Banana", "Orange", "Watermelon")
+val result = list.any { it.lengthh <= 5 }
+```
+
+#### all
+
+判断集合中是否所有元素都满足条件，返回`Boolean`。
+
+```kotlin
+val list = listOf("Apple", "Banana", "Orange", "Watermelon")
+val result = list.all { it.length <= 5 }
+```
+
+### Java 函数式 API 的使用
+
+在 Kotlin 代码中调用一个 Java 方法，该方法接收一个 Java 单抽象方法接口参数，就可以使用函数式 API 。
+
+Java 单抽象方法接口指的是接口中只有一个待实现方法,如果接口中有多个待实现方法,则无法使用函数式 API 。
+
+## 空指针检查
+
+#### 可空类型系统
+
+Kotlin 利用**编译时判空检查机制**，几乎加杜绝了空指针异常。
+
+Kotlin 将控指针异常的检查提前到编译时期。如果程序存在空指针异常的风险，那么在编译的时候会直接报错，修正之后才能成功运行，这样就可以保证在运行时期不会出现空指针异常。
+
+可空类型系统就是在类名后面加上一个**问号**。
+
+```kotlin
+// 允许 study 参数为空
+fun doStudy(study: Study?) {}
+```
+
+#### 判空辅助工具
+
+##### `?.`操作符
+
+当对象不为空时正常调用相应的方法，当对象为空时则什么都不做。
+
+```kotlin
+if (a != null) {
+    a.doSomething()
+}
+
+// 可以简化为
+a?.doSomething()
+```
+
+##### `?:`操作符
+
+`?:`操作符的左右两边都接受一个表达式，如果左边的表达式不为空就返回左边表达式的值，否则返回右边表达式的值。
+
+```kotlin
+val c = if (a != null) a else b
+
+// 可以简化为
+val c = a ?: b
+```
+
+`!!`非空断言工具
+
+```kotlin
+val upperCase = content!!.toUpperCase() // 这是一个危险的操作
+```
+
