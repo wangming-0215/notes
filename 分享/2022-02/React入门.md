@@ -318,9 +318,9 @@ function Count() {
 
 每个组件（class 组件）都包含“生命周期方法”，开发过程中，可以重写这些方法，以便在运行特定阶段执行。
 
-![生命周期](./images/react-lifecycle.png)
+![生命周期](../images/react-lifecycle.png)
 
-![生命周期](./images/react-lifecycle-complete.png)
+![生命周期](../images/react-lifecycle-complete.png)
 
 React 组件的生命周期分为三个部分。
 
