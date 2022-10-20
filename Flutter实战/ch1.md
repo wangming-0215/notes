@@ -4,7 +4,7 @@
 
 ### 原生开发与跨平台技术
 
-####  原生开发
+#### 原生开发
 
 > 原生应用程序是指某一个移动平台所特有的应用，它使用相应平台支持的开发工具和语言，并直接调用系统提供的`SDK API`
 
@@ -15,21 +15,21 @@
    1. 平台特定，开发成本高。不同平台必须维护不同的代码，人力成本随之增大；
    2. 内容固定，动态化弱，在大多数情况下，有功能更新时只能发新版本。
 
-####  跨平台技术简介
+#### 跨平台技术简介
 
 跨平台技术可以很好的解决原生开发面临的问题，根据其原理，主要可分为三类
 
 1. H5 + 原生（Cordova、Ionic、微信小程序）
 2. JavaScript 开发 + 原生渲染（React Native、Weex、快应用）
-3. 自绘UI + 原生（QT Mobile、Flutter）
+3. 自绘 UI + 原生（QT Mobile、Flutter）
 
 #### 跨平台技术对比
 
-|       技术类型        |    UI 渲染方式    | 性能 |    开发效率     |   动态化   |    框架代表    |
-| :-------------------: | :---------------: | :--: | :-------------: | :--------: | :------------: |
-|       H5 + 原生       |   WebView 渲染    | 一般 |       高        |    支持    | Cordova、Ionic |
-| JavaScript + 原生渲染 |   原生控件渲染    |  好  |       中        |    支持    |    RN、Weex    |
-|    自绘 UI + 原生     | 调用系统 API 渲染 |  好  | Flutter高，QT低 | 默认不支持 |  QT、Flutter   |
+|       技术类型        |    UI 渲染方式    | 性能 |     开发效率      |   动态化   |    框架代表    |
+| :-------------------: | :---------------: | :--: | :---------------: | :--------: | :------------: |
+|       H5 + 原生       |   WebView 渲染    | 一般 |        高         |    支持    | Cordova、Ionic |
+| JavaScript + 原生渲染 |   原生控件渲染    |  好  |        中         |    支持    |    RN、Weex    |
+|    自绘 UI + 原生     | 调用系统 API 渲染 |  好  | Flutter 高，QT 低 | 默认不支持 |  QT、Flutter   |
 
 ## 初识 Flutter
 
@@ -41,11 +41,7 @@
 
   Flutter 既不使用`WebView`，也不使用操作系统的原生控件。Flutter 使用自己的高性能渲染引擎来绘制`Widget`，保证在 Android 和 IOS 上 UI 的一致性，而且可以避免因对原生控件依赖而带来的限制及高昂的维护成本。
 
-  
-
   Flutter 使用 `Skia` 作为 2D 渲染引擎。`Skia` 是一个 2D 图形处理函数库，包含字形、坐标转换，以及点阵图，且都有高效能且简洁的表现。`Skia` 是跨平台的，目前 Google Chrome 浏览器和 Android 均采用 `Skia` 作为其绘图引擎。
-
-
 
 - 高性能
 
@@ -54,24 +50,18 @@
   1. Flutter APP 采用 Dart 语言开发。
   2. Flutter 使用自己的渲染引擎绘制 UI，布局数据等有 Dart 语言直接控制，所以在布局过程中不需要想 RN 那样在 JavaScript 和 Native 之间通信。
 
-  
-
 - 采用 Dart 语言开发
 
   Dart 与 JavaScript 对比：
 
   1. 开发效率高
      1. 基于 `JIT` 的快速开发周期：Flutter 在开发阶段采用 `JIT` 模式，避免了每次改动都进行编译，节省开发时间
-     2. 基于 `AOT` 的发布包：Flutter在发布时通过 `AOT` 生成高效的 `ARM` 代码以保证应用的性能
+     2. 基于 `AOT` 的发布包：Flutter 在发布时通过 `AOT` 生成高效的 `ARM` 代码以保证应用的性能
   2. 高性能
   3. 快速分配内存
   4. 类型安全
 
-
-
 **NOTE**：目前，程序主要有两种运行方式：`静态编译`与`动态编译`。静态编译的程序在执行前全部被翻译为机器码，通常将这种类型称为`AOT(Ahead Of Time)`，即“提前编译”；而解释执行的运行方式则是一句一句，边翻译边运行，称为`JIT(Just In Time)`，即“即时编译“。`JIT`和`AOT`指的是程序运行方式，与编程语言并不是强关联的，有些语言既可以以`JIT`的方式运行，也可以以`AOT`的方式运行，如`Java`、`Python`。
-
-
 
 ### 框架结构
 
@@ -85,9 +75,7 @@
 
 3. `Rendering`层，抽象的布局层，它依赖于 Dart UI 层，`Rendering`层会构建一个 UI 树，当 UI 树发生变化时，会计算出发生变化的那一部分，然后更新 UI 树，最终将 UI 树绘制到屏幕上。这个过程有些类似于 React 中的虚拟 DOM。`Rendering`层可以说是 Flutter UI 框架最核心的部分，它除了确定每个 UI 元素的位置、大小之外，还要进行坐标变换、绘制（调用底层`dart:ui`）。
 
-4. `Widget`层是 Flutter 提供的一套基础组件库，在基础组件库之上，Flutter 还提供了 `Material` 和 `Cupertino`两种视觉风格的组件库。而**Flutter开发的打多数场景，只是与这两层打交道**。
-
-
+4. `Widget`层是 Flutter 提供的一套基础组件库，在基础组件库之上，Flutter 还提供了 `Material` 和 `Cupertino`两种视觉风格的组件库。而**Flutter 开发的打多数场景，只是与这两层打交道**。
 
 ## Dart 语言简介
 
@@ -108,11 +96,7 @@
 
   `Object`是 Dart 所有对象的基类，所有类型都是`Object`的子类（包括`Function`和`Null`），所以任何类型都可以赋值给`Object`声明的对象。
 
-  
-
   `dynamic`和`Object`的相同之处在于，它们声明的变量可以在后期改变赋值类型。
-
-  
 
   `dynamic`和`Object`不同之处在于，`dynamic`声明的对象，编译器会提供所有可能的组合，而`Object`声明的对象只会使用`Object`的属性与方法，否则编译器会报错。
 
@@ -121,7 +105,7 @@
   Object x;
   t = 'Hello World';
   x = 'Hello Object';
-  
+
   // 下面的代码没有问题
   t = 1000;
   x = 1000;
@@ -131,11 +115,7 @@
 
   `final`或`const`变量只能被设置一次，两者的区别在于：`const`变量是一个编译时常量，`final`变量则是在第一次使用时被初始化。
 
-  
-
   `final`和`const`修饰的变量，其类型可以省略。
-  
-  
 
 ### 函数
 
@@ -233,7 +213,7 @@ void doStuff(
 // 运行：dart args.dart 1 test
 void main(List<String> arguments) {
   print(arguments);
-  
+
   assert(arguments.length == 2);
   assert(int.parse(arguments[0]) == 1);
   assert(arguments[1] == 'test');
@@ -288,13 +268,13 @@ bool topLevel = true;
 
 void main() {
  	var insideMain = true;
-  
+
   void myFunction() {
     var insideFunction = true;
-    
+
     void nestedFunction() {
       var insideNestedFunction = true;
-      
+
       assert(topLevel);
       assert(insideMain);
       assert(insideFunction);
@@ -317,9 +297,9 @@ Function makeAdder(int addBy) {
 
 void main() {
   var add2 = makeAdder(2);
-  
+
   var add4 = makeAdder(4);
-  
+
   assert(add2(3) == 5);
   assert(add4(3) == 7);
 }
@@ -327,7 +307,7 @@ void main() {
 
 ### 异步支持
 
-Dart 有非常多返回`Future`或者`Stream`对象的函数。这些函数称为**异步函数**，它们在设置好一些耗时操作后返回（比如I/O操作），而不是等到这个操作完成。
+Dart 有非常多返回`Future`或者`Stream`对象的函数。这些函数称为**异步函数**，它们在设置好一些耗时操作后返回（比如 I/O 操作），而不是等到这个操作完成。
 
 `async`和`await`关键词支持异步编程，允许写出与同步代码类似的异步代码
 
@@ -354,16 +334,12 @@ try {
 }
 ```
 
-
-
 常用的`Future API`:
 
 - `Future.then`：异步操作成功时执行的回调，类比 JavaScript 中`promise.then`；
 - `Future.catchError`：异步操作失败是时执行的回调，类比 JavaScript 中`promise.catch`；
 - `Future.whenComplete`：无论异步操作执行成功与否都会执行的回调，类比 JavaScript 中`promise.final`；
 - `Future.wait`：等待多个异步任务都执行结束，类比 JavaScript 中`promise.all`；
-
-
 
 #### 声明`async`函数
 
@@ -396,8 +372,6 @@ await for (varOrType identifier in expression) {
 2. 设置 `identifier` 为发射出来的值，并执行循环体；
 3. 重复步骤 1 和 2 直到流关闭为止。
 
-
-
 监听流：
 
 ```dart
@@ -407,8 +381,6 @@ querySelector('#submit').onClick.listen((e) {
 })
 ```
 
-
-
 流数据转换：
 
 ```dart
@@ -417,19 +389,17 @@ var lines = inputStream
   .transform(LinesSplitter());
 ```
 
-
-
 异常处理：
 
 ```dart
 Future readFileAwaitFor() async {
   var config = File('config.txt');
   Stream<List<int>> inputStream = config.openRead();
-  
+
   var lines = inputStream
     .transform(utf8.decoder)
     .transform(LinesSplitter());
-  
+
   try {
     await for (var line in lines) {
       print('Got ${line.length} characters from stream');
@@ -463,5 +433,4 @@ inputStream
 	);
 ```
 
-更多信息查看[Dart文档](https://dart.dev)
-
+更多信息查看[Dart 文档](https://dart.dev)

@@ -1,5 +1,3 @@
-
-
 # Kotlin 入门
 
 > Kotlin 是 JetBrains 公司开发与设计的，2011 年发布了第一个版本，2012 年正式开源，2016 年发 1.0 版本，2017 google 宣布 Kotlin 正式成为 Android 一级开发语言。
@@ -21,14 +19,14 @@ Kotlin 中只允许两种关键字声明变量:
       val  a = 10 // 自动推导类型
       println(a)
   }
-  
+
   fun main() {
       val a: Int = 10 // 显示声明类型
       println(a)
   }
   ```
 
- **NOTE:** Kotlin 每一行代码的结尾可以不用加分号。
+  **NOTE:** Kotlin 每一行代码的结尾可以不用加分号。
 
 #### Java 和 Kotlin 数据类型对照表
 
@@ -190,7 +188,7 @@ fun getScore(name: String) = when {
 
 #### while
 
-Kotlin 的`while`循环Java中的`while`没有任何区别
+Kotlin 的`while`循环 Java 中的`while`没有任何区别
 
 #### for
 
@@ -232,7 +230,7 @@ Kotlin 中使用`class`关键字创建类。
 class Person {
     var name = "" // 使用 var 关键字是因为需要在创建对象之后在重新赋值为更具体的值
     var age = 0
-    
+
     fun eat() {
         println(name + " is eating. He is " + age + " years old.")
     }
@@ -240,7 +238,7 @@ class Person {
 
 fun main() {
 	// 实例化
-	val p = Person() // Kotlin 中实例化对象时不需要使用`new`关键字    
+	val p = Person() // Kotlin 中实例化对象时不需要使用`new`关键字
     p.name = "Jack"
     p.age = 19
     p.eat()
@@ -250,7 +248,7 @@ fun main() {
 
 ### 继承和构造函数
 
-#####  继承
+##### 继承
 
 继承是基于现实场景总结出来的一个概念。
 
@@ -258,13 +256,13 @@ fun main() {
 
 Kotlin 中任何一个*非抽象类*默认都是不可以被继承的，相当于 Java 中给类声明了 `final`关键字。要想类可以被继承，需要在类声明是加上`open`关键字，或者定义成抽象类。（抽象类不可被实例化）
 
-*《Effective Java》一书中明确提到，如果一个类不是专门为继承而设计的，那么就应该主动将他将上 final 声明，禁止它可以被继承。*
+_《Effective Java》一书中明确提到，如果一个类不是专门为继承而设计的，那么就应该主动将他将上 final 声明，禁止它可以被继承。_
 
 语法：
 
 ```
 class 字类 : 父类 {
-	
+
 }
 ```
 
@@ -274,7 +272,7 @@ class 字类 : 父类 {
 open class Person {
     var name = ""
     var age = 0
-    
+
     fun eat() {
         println(name + " is eating. He is " + age + " years old.")
     }
@@ -310,7 +308,7 @@ class Student : Person() {
            println("grade is " + grade)
        }
    }
-   
+
    val student = Student('a123', 5)
    ```
 
@@ -330,14 +328,14 @@ class Student : Person() {
            println(name + " is eating. He is " + age + " years old.")
        }
    }
-   
+
    class Student(val sno: String, val grade: Int, name: String, age: Int): Person(name, age) {
        // 次构造函数，通过 `this` 调用主构造函数
        constructor(name: String, age: Int): this("", 0, name, age) {}
        // 次构造函数，通过 `this` 调用第一个次构造函数，并将 name 和 age 参数也赋值成初始值，间接调用了主构造函数
        constructor() : this("", 0)
    }
-   
+
    // 3 种方式创建 Student 对象
    val student1 = Student() // 第二个次构造函数
    val student2 = Student("Jack", 19) // 第一个次构造函数
@@ -354,7 +352,7 @@ class Student : Person() {
 // 没有主构造函数，次构造函数只能直接调用父类的构造函数，`this`关键字也换成了`super`关键字。
 class Student: Person {
     constructor(name: String, age: Int): super(name, age) {
-        
+
     }
 }
 ```
@@ -384,7 +382,7 @@ class Student(name: String, age: Int): Person(name, age), Study {
     override fun readBooks() {
         println(name + " is reading.")
     }
-    
+
     override fun doHomework() {
         println(name + ' is doing homework.')
     }
@@ -504,7 +502,7 @@ for (fruit in list) {
 }
 ```
 
-#### Set 
+#### Set
 
 `Set`集合中不可以存放重复元素，如果存放多个相同元素，只会保留一份。
 
@@ -524,7 +522,7 @@ for (fruit in set) {
 
 `Map`是一种键值对形式的数据结构。
 
-``` kotlin
+```kotlin
 // 第一种
 val map = HashMap<String, Int>()
 map.put("Apple", 1)
@@ -549,7 +547,7 @@ for((fruit, number) in map) {
 }
 ```
 
-### 集合的函数式API
+### 集合的函数式 API
 
 #### maxBy
 
@@ -672,10 +670,12 @@ val upperCase = content!!.toUpperCase() // 这是一个危险的操作
 
 `let`既不是操作符，也不是什么关键字，而是一个函数。这个函数提供了函数式 API 的编程接口，并将原始调用对象作为参数传递到 Lambda 表达式中。
 
+`let` 函数可以处理全局变量的判空问题。
+
 ```kotlin
 // obj 调用了 let 函数，然后 lambda 表达式中的代码就会立即执行，并将 obj 对象本身作为参数传递到 lambda 表达式中。
 // 为了避免重名，这里将参数名改为 obj2
-obj.let { obj2 -> 
+obj.let { obj2 ->
 	// 编写具体业务逻辑
 }
 ```
@@ -737,3 +737,186 @@ fun main() {
 }
 ```
 
+## 标准函数和静态方法
+
+### 标准函数
+
+Kotlin 的标准函数指的是 Standard.kt 文件中定义的函数，任何 Kotlin 代码都可以自由地调用所有的标准函数。
+
+#### `with` 函数
+
+`with` 函数可以在连续调用同一个对象的多个方法时让代码变得更加简洁。
+
+`with`函数接收两个参数：
+
+- 第一个参数可以是一个任意类型的对象；
+- 第二个参数是一个 Lambda 表达式。
+
+`with`函数会在`Lambda`表达式中提供第一个参数对象的上下文，并使用`Lambda`表达式中的最后一行代码作为返回值返回。
+
+```kotlin
+val result = with(obj) {
+    // 这里是 obj 的上下文
+    "value" // with 函数的返回值
+}
+```
+
+```kotlin
+val list = listOf("Apple", "Banana", "Orange", "Pear", "Grape")
+val result = with(StringBuilder()) {
+    append("Start eating fruits.\n")
+    for (fruit in list) {
+        append(fruit).append("\n")
+    }
+    append("Ate all fruits.")
+    toString()
+}
+println(result)
+```
+
+上述代码等同于：
+
+```kotlin
+val list = listOf("Apple", "Banana", "Orange", "Pear", "Grape")
+val builder = StringBuilder()
+builder.append("Start eating fruits.\n")
+for (fruit in list) {
+    builder.append(fruit).append("\n")
+}
+builder.append("Ate all fruits.")
+val result = builder.toString();
+println(result)
+```
+
+#### `run`函数
+
+`run`函数的用法和使用场景其实和`with`函数非常相似。
+
+- `run`函数通常不会直接调用，而是要在某个对象的基础上调用；
+- `run`函数只接收一个 Lambda 参数，并且会在 Lambda 表达式中提供调用上下文。
+
+```kotlin
+val result = obj.run {
+    // 这里时 obj 的上下文
+    "value" // run 函数的返回值
+}
+```
+
+```kotlin
+val list = listOf("Apple", "Banana", "Orange", "Pear", "Grape")
+val result = StringBuilder().run {
+    append("Start eating fruits.\n")
+    for (fruit in list) {
+        append(fruit).append("\n")
+    }
+    append("Ate all fruits.")
+    toString()
+}
+
+println(result)
+```
+
+#### `apply` 函数
+
+`apply`函数和`run`函数也是极其类似的，都要在某个对象上调用，并且只接收一个 Lambda 参数，也会在 Lambda 表达式中提供调用对象的上下文，但是`apply`函数无法指定返回值，而是会自动返回调用对象本身。
+
+```apply
+val result = obj.apply {
+    // 这里是 obj 的上下文
+}
+
+// result == obj
+```
+
+```kotlin
+val list = listOf("Apple", "Banana", "Orange", "Pear", "Grape")
+val result = StringBuilder().apply {
+    append("Start eating fruits.\n")
+    for (fruit in list) {
+        append(fruit).append("\n")
+    }
+    append("Ate all fruits.")
+}
+
+println(result.toString())
+```
+
+**NOTE:** `apply`函数无法指定返回值，只能返回调用对象本身。
+
+使用`apply`函数打开新弹窗
+
+```kotlin
+val intent = Intent(context, SecondActivity::class.java).apply {
+    putExtra("param1", "data1")
+    putExtra("param2", "data2")
+}
+context.startActivity(intent)
+```
+
+### 静态方法
+
+静态方法指的是那种不需要创建实例就能调用的方法。
+
+静态方法非常适合编写一些工具类的功能，因为工具类通常没有创建实例的必要，基本是全局通用的。
+
+Kotlin 极度弱化了静态方法这个概念，在 Kotlin 中定义一个静态方法反倒不是一件容易的事。Kotlin 提供了比静态方法更好用的语法特性————**单例类**
+
+```kotlin
+object Util {
+    fun doAction() {
+        println("do action")
+    }
+}
+```
+
+单例类的写法会将整个类的所有方法全部变成类似于静态方法的调用方式，如果只希望让类中的某个方法变成静态方法的调用方式可以使用`companion object`。
+
+```kotlin
+class Util {
+    fun doAction1() {
+        println("do action1")
+    }
+
+    companion object {
+        fun doAction2() {
+            println("do action2")
+        }
+    }
+}
+
+// doAction2() 并不是静态方法，而是使用静态方法的调用方式调用
+Util.doAction2()
+```
+
+`doAction2()`方法其实也并不是静态方法，`companion object` 这个关键字实际上会在类的内部创建一个伴生类， 而`doAction2()`方法就是定义在这个伴生类里面的实例方法。只是 Kotlin 会保证 Util 类始终只会存在一个伴生类对象，因此调用`Util.doAction2()`方法实际上就是调用`Util`类中伴生对象的`doAction2()`方法。
+
+使用单例类和`companion object`都只是在语法的形式上模仿了静态方法的调用方式，实际上它们都不是真正的静态方法。
+
+Kotlin 也提供了两种方式来定义真正的静态方法：
+
+1. 注解
+
+   给单例类或者`companion object`中的方法加上`@JvmStatic`注解，那么 Kotlin 编译器就会将这些方法编译成真正的静态方法。
+
+   `@JvmStatic`注解只能加在单例类或`companion object`中的方法上。
+
+   ```kotlin
+    class Util {
+        fun doAction1() {
+            println("do action1")
+        }
+
+        companion object {
+            @JvmStatic
+            fun doAction2() {
+                println("do action2")
+            }
+        }
+    }
+   ```
+
+2. 顶层方法
+
+   **顶层方法**指的是哪些没有定义在任何类中的方法。所有的顶层方法都可以在任何位置被直接调用。
+
+   Kotlin 编译器会将所有的顶层方法全部编译成静态方法。
