@@ -920,3 +920,80 @@ Kotlin 也提供了两种方式来定义真正的静态方法：
    **顶层方法**指的是哪些没有定义在任何类中的方法。所有的顶层方法都可以在任何位置被直接调用。
 
    Kotlin 编译器会将所有的顶层方法全部编译成静态方法。
+
+## 延迟初始化和密封类
+
+### 变量延迟初始化
+
+`lateinit` 关键字告诉 Kotlin 编译器晚些时候对这个变量初始化。这样就不用一开始赋值为 `null` 了。代码中也无需编写大量额外的判空处理。
+
+当对一个全局变量使用 `lateinit` 关键字时，一定要确保该全局变量在调用之前完成初始化工作。
+
+```kotlin
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private lateinit var adapter: MsgAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        adapter = MsgAdapter(msgList)
+    }
+
+    override fun onClick(v: View?) {
+        adapter.notifyItemInserted(msgList.size - 1)
+    }
+}
+```
+
+也可以通过代码来判断一个全局变量是否完成初始化，在某些时候能够有效避免对某个变量重复初始化
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    if (!::adapter.isInitialized) {
+        adapter = MsgAdapter(msgList)
+    }
+}
+```
+
+`::adapter.isInitialized` 可用于判断`adapter`变量是否已经初始化。
+
+### 使用密封类优化代码
+
+密封类的关键字时 `sealed class`。
+
+```kotlin
+sealed class Result
+
+class Success(val msg: String) : Result()
+
+class Failure(val error: Exception) : Result()
+
+fun getResultMsg(result: Result) = when (result) {
+    is Success -> result.msg
+    is Failure -> "Error is ${result.error.message}"
+}
+```
+
+`when` 语句传入一个密封类变量作为条件时，Kotlin 编译器会自动检查该密封类有哪些子类，并强制要求将每一个子类所对应的全部条件处理。这样就可以保证，即使没有编写`else`条件，也不可能出现漏写条件分支的情况。
+
+```kotlin
+sealed class MsgViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+class LeftViewHolder(view: View) : MsgViewHolder(view) {
+    val leftMsg: TextView = view.findViewById(R.id.leftMsg)
+}
+
+class RightViewHolder(view: View) : MsgViewHolder(view) {
+    val rightMsg: TextView = view.findViewById(R.id.rightMsg)
+}
+
+class MsgAdapter(val msgList: List<Msg>) : RecyclerView.Adapter<MsgViewHolder>() {
+
+    override fun onBindViewHolder(holder: MsgViewHolder, position: Int) {
+        val msg = msgList[position]
+        when (holder) {
+            is LeftViewHolder -> holder.leftMsg.text = msg.content
+            is RightViewHolder -> holder.rightMsg.text = msg.content
+         }
+    }
+}
+```
