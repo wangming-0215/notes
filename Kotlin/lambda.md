@@ -6,7 +6,7 @@ Kotlin 中函数是*一等公民*， 可以作为参数传递给其他函数以�
 
 高阶函数是将函数作为**参数**或**返回值**的函数
 
-```kt
+```kotlin
 fun <T, R> Collection<T>.fold(
   initial: R,
   combine: (acc: R, nextElement: T) -> R
